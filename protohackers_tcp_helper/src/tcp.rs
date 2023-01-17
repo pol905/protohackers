@@ -1,3 +1,4 @@
+use std::io::{BufReader, BufRead};
 use std::{
   io::{Read, Write},
   net::{Shutdown, TcpListener, TcpStream},
@@ -9,10 +10,23 @@ pub fn create_listener(port: u16) -> Result<TcpListener, ProtoHackersError> {
   Ok(TcpListener::bind(format!("0.0.0.0:{port}"))?)
 }
 
-pub fn read_stream_all(stream: &mut TcpStream) -> Result<(usize, Vec<u8>), ProtoHackersError> {
-  let mut buf = vec![];
-  let total_bytes_read = stream.read_to_end(&mut buf)?;
+pub fn read_stream(stream: &TcpStream, delimiter: u8) -> Result<(usize, Vec<u8>), ProtoHackersError> {
+  let mut buf: Vec<u8> = vec![];
+  let mut reader = BufReader::new(stream);
+  let total_bytes_read = reader.read_until(delimiter, &mut buf)?;
   Ok((total_bytes_read, buf))
+}
+
+pub fn read_stream_all(stream: &TcpStream) -> Result<(usize, Vec<u8>), ProtoHackersError> {
+  let mut buf = vec![];
+  let mut reader = BufReader::new(stream);
+  let total_bytes_read = reader.read_to_end(&mut buf)?;
+  Ok((total_bytes_read, buf))
+}
+
+
+pub fn write_stream(stream: &mut TcpStream, buf: &[u8]) -> Result<usize, ProtoHackersError> {
+  Ok(stream.write(buf)?)
 }
 
 pub fn write_stream_all(stream: &mut TcpStream, buf: &[u8]) -> Result<(), ProtoHackersError> {

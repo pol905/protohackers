@@ -14,4 +14,7 @@ RUN cargo build --target x86_64-unknown-linux-musl --release
 
 FROM alpine:3.17.0
 COPY --from=build app/target/x86_64-unknown-linux-musl/release/smoke_test /
-CMD [ "/smoke_test", "--port", "9000"]
+COPY --from=build app/target/x86_64-unknown-linux-musl/release/prime_time /
+COPY --from=build app/script.sh /
+RUN chmod +x "/script.sh"
+ENTRYPOINT ["/prime_time", "--port", "9001"]

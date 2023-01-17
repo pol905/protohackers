@@ -16,7 +16,7 @@ fn main() {
         // Does incoming keep looping while there are no connections ?
         match connection {
             Ok(mut stream) => {
-                let data = tcp::read_stream_all(&mut stream);
+                let data = tcp::read_stream_all(&stream);
 
                 let (total_bytes, buf) = match data {
                     Err(err) => {

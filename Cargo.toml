@@ -1,6 +1,7 @@
 [workspace]
 
 members = [
+    "protohackers_tcp_helper",
     "smoke_test",
-    "protohackers_tcp_helper"
+    "prime_time"
 ]
