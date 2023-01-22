@@ -53,9 +53,9 @@ impl AssetPrices {
         if min_time > max_time {
             return 0
         }
-        let (price, count) = self.prices.iter().filter(|(timestamp, _)| *timestamp >= min_time && *timestamp <= max_time).fold((0,0),|acc, (_, price)| (acc.0 + price, acc.1 + 1));
+        let (price, count) = self.prices.iter().filter(|(timestamp, _)| *timestamp >= min_time && *timestamp <= max_time).fold((0i64,0i64),|acc, (_, price)| (acc.0 + *price as i64, acc.1 + 1));
         println!("Price, count: {}, {}", price, count);
-        if count > 0 { price / count } else { 0 } 
+        if count > 0 { (price / count) as i32 } else { 0 } 
     }
 }
 
@@ -69,12 +69,13 @@ fn main() {
             match connection {
                 Ok(mut tcp_stream) => {
                     let mut asset_prices = AssetPrices::new();
+                    let mut buf = [0; 9];
                     loop {
-                        let mut buf = [0; 9];
                         let bytes_read = tcp_stream.read_exact(&mut buf);
-                        if let Err(_) = bytes_read {
+                        if bytes_read.is_err() {
                             break;
                         }
+
                         let req_type = buf[0];
                         let first_value: [u8; 4] = buf[1..5].try_into().unwrap();
                         let second_value: [u8; 4] = buf[5..].try_into().unwrap();

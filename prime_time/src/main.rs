@@ -2,7 +2,7 @@ use std::{net::Shutdown, thread};
 use serde::{Serialize, Deserialize};
 use protohackers_tcp_helper::{cli_helper::Args, tcp, errors::ProtoHackersError};
 use clap::Parser;
-use serde_json;
+
 
 #[derive(Deserialize, Debug)]
 struct PrimaryRequest {
@@ -86,7 +86,7 @@ fn main() {
               }
             }
             
-            if let None = normalize.number {
+            if normalize.number.is_none() {
               println!("number was not defined");
               let _ = tcp::write_stream(&mut tcp_stream, &[b'a', b'\n']);
               tcp::shutdown_stream(&tcp_stream, Shutdown::Both);
