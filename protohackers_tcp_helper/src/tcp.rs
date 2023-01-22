@@ -1,4 +1,4 @@
-use std::io::{BufReader, BufRead};
+use std::io::{BufReader, BufRead, BufWriter};
 use std::{
   io::{Read, Write},
   net::{Shutdown, TcpListener, TcpStream},
@@ -14,6 +14,10 @@ pub fn create_buf_reader(stream: &TcpStream) -> BufReader<&TcpStream> {
   BufReader::new(stream)
 }
 
+pub fn create_buf_writer(stream: &TcpStream) -> BufWriter<&TcpStream> {
+  BufWriter::new(stream)
+}
+
 pub fn read_stream(stream: &TcpStream, delimiter: u8) -> Result<(usize, Vec<u8>), ProtoHackersError> {
   let mut buf: Vec<u8> = vec![];
   let mut reader = BufReader::new(stream);
@@ -21,8 +25,8 @@ pub fn read_stream(stream: &TcpStream, delimiter: u8) -> Result<(usize, Vec<u8>)
   Ok((total_bytes_read, buf))
 }
 
-pub fn read_stream_exact(reader: &mut BufReader<&TcpStream>, buf: &mut [u8]) -> Result<usize, ProtoHackersError> {
-  Ok(reader.read(buf)?)
+pub fn read_stream_exact(reader: &mut BufReader<&TcpStream>, buf: &mut [u8]) -> Result<(), ProtoHackersError> {
+  Ok(reader.read_exact(buf)?)
 }
 
 pub fn read_stream_all(stream: &TcpStream) -> Result<(usize, Vec<u8>), ProtoHackersError> {
@@ -33,7 +37,7 @@ pub fn read_stream_all(stream: &TcpStream) -> Result<(usize, Vec<u8>), ProtoHack
 }
 
 
-pub fn write_stream(stream: &mut TcpStream, buf: &[u8]) -> Result<usize, ProtoHackersError> {
+pub fn write_stream(stream: &mut BufWriter<&TcpStream>, buf: &[u8]) -> Result<usize, ProtoHackersError> {
   Ok(stream.write(buf)?)
 }
 

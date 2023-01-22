@@ -3,11 +3,7 @@ use protohackers_tcp_helper::{
     cli_helper::Args,
     tcp, errors::ProtoHackersError
 };
-use std::{
-    thread,
-    io::{Read, Write}
-};
-
+use std::thread;
 struct AssetPrice {
     timestamp: i32,
     price: i32
@@ -53,8 +49,10 @@ impl AssetPrices {
         if min_time > max_time {
             return 0
         }
-        let (price, count) = self.prices.iter().filter(|(timestamp, _)| *timestamp >= min_time && *timestamp <= max_time).fold((0i64,0i64),|acc, (_, price)| (acc.0 + *price as i64, acc.1 + 1));
-        println!("Price, count: {}, {}", price, count);
+        let (price, count) = self.prices
+        .iter()
+        .filter(|(timestamp, _)| *timestamp >= min_time && *timestamp <= max_time)
+        .fold((0i64,0i64),|acc, (_, price)| (acc.0 + *price as i64, acc.1 + 1));
         if count > 0 { (price / count) as i32 } else { 0 } 
     }
 }
@@ -67,11 +65,13 @@ fn main() {
     for connection in listener.incoming() {
         thread::spawn(move || {
             match connection {
-                Ok(mut tcp_stream) => {
+                Ok(tcp_stream) => {
                     let mut asset_prices = AssetPrices::new();
                     let mut buf = [0; 9];
+                    let mut tcp_reader = tcp::create_buf_reader(&tcp_stream);
+                    let mut tcp_writer = tcp::create_buf_writer(&tcp_stream);
                     loop {
-                        let bytes_read = tcp_stream.read_exact(&mut buf);
+                        let bytes_read = tcp::read_stream_exact(&mut tcp_reader, &mut buf);
                         if bytes_read.is_err() {
                             break;
                         }
@@ -89,7 +89,7 @@ fn main() {
                             b'Q' => {
                                 let query = Query::new(first_value, second_value);
                                 let mean = asset_prices.find_mean(query);
-                                tcp_stream.write(mean.to_be_bytes().as_slice());
+                                let _ = tcp::write_stream(&mut tcp_writer, mean.to_be_bytes().as_slice());
                             },
                             _ => {}
                         }

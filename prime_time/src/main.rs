@@ -47,8 +47,9 @@ fn main() {
   for connection in listener.incoming() {
     thread::spawn(move || {
       match connection {
-        Ok(mut tcp_stream)  => {
+        Ok(tcp_stream)  => {
           println!("Connected to client {}", tcp_stream.peer_addr().unwrap());
+          let mut tcp_writer = tcp::create_buf_writer(&tcp_stream);
           while let Ok(request) = tcp::read_stream(&tcp_stream, b'\n') {
             let (bytes_read, bytes) = request;
             
@@ -68,7 +69,7 @@ fn main() {
   
             if let Err(err) = parsed_request {
               println!("Failed to parse JSON payload: {:?}", err);
-              let _ = tcp::write_stream(&mut tcp_stream, &[b'a', b'\n']);
+              let _ = tcp::write_stream(&mut tcp_writer, &[b'a', b'\n']);
               tcp::shutdown_stream(&tcp_stream, Shutdown::Both);
               break;
             }
@@ -80,7 +81,7 @@ fn main() {
               Some(x) if *x == String::from("isPrime") => {}
               _ => {
                 println!("method is not \"isPrime\"/was not defined");
-                let _ = tcp::write_stream(&mut tcp_stream, &[b'a', b'\n']);
+                let _ = tcp::write_stream(&mut tcp_writer, &[b'a', b'\n']);
                 tcp::shutdown_stream(&tcp_stream, Shutdown::Both);
                 break;
               }
@@ -88,7 +89,7 @@ fn main() {
             
             if normalize.number.is_none() {
               println!("number was not defined");
-              let _ = tcp::write_stream(&mut tcp_stream, &[b'a', b'\n']);
+              let _ = tcp::write_stream(&mut tcp_writer, &[b'a', b'\n']);
               tcp::shutdown_stream(&tcp_stream, Shutdown::Both);
               break;
             }
@@ -100,7 +101,7 @@ fn main() {
   
             let mut encoded_response = serde_json::to_vec(&response).unwrap();
             encoded_response.push(b'\n');
-            let _ = tcp::write_stream(&mut tcp_stream, &encoded_response);
+            let _ = tcp::write_stream(&mut tcp_writer, &encoded_response);
           }
         },
         Err(err) => {
