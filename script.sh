@@ -1,4 +1,3 @@
-eMoBq3HEjyu11DgrCRvlY9wwh8LMCNJS2Ec3aH1L7cs
 #!/bin/sh
 
 # Start the first process

@@ -1,0 +1,19 @@
+# fly.toml file generated for autumn-cloud-9707 on 2023-01-29T13:47:07+05:30
+
+app = "autumn-cloud-9707"
+kill_signal = "SIGINT"
+kill_timeout = 5
+processes = []
+
+[env]
+
+[experimental]
+  allowed_public_ports = []
+  auto_rollback = true
+
+[[services]]
+  internal_port = 9004
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 9004
