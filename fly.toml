@@ -18,23 +18,23 @@ processes = []
   [[services.ports]]
     port = 9000
 
-[[services]]
-  internal_port = 9001
-  protocol = "tcp"
+# [[services]]
+#   internal_port = 9001
+#   protocol = "tcp"
 
-  [[services.ports]]
-    port = 9001
+#   [[services.ports]]
+#     port = 9001
 
-[[services]]
-  internal_port = 9002
-  protocol = "tcp"
+# [[services]]
+#   internal_port = 9002
+#   protocol = "tcp"
 
-  [[services.ports]]
-    port = 9002
+#   [[services.ports]]
+#     port = 9002
 
-[[services]]
-  internal_port = 9003
-  protocol = "tcp"
+# [[services]]
+#   internal_port = 9003
+#   protocol = "tcp"
 
-  [[services.ports]]
-    port = 9003
+#   [[services.ports]]
+#     port = 9003
