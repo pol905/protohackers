@@ -12,8 +12,29 @@ processes = []
   auto_rollback = true
 
 [[services]]
-  internal_port = 9004
+  internal_port = 9000
   protocol = "tcp"
 
   [[services.ports]]
-    port = 9004
+    port = 9000
+
+[[services]]
+  internal_port = 9001
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 9001
+
+[[services]]
+  internal_port = 9002
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 9002
+
+[[services]]
+  internal_port = 9003
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 9003
