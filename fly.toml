@@ -38,3 +38,10 @@ processes = []
 
   [[services.ports]]
     port = 9004
+
+[[services]]
+  internal_port = 9005
+  protocol = "tcp"
+
+  [[services.ports]]
+    port = 9005

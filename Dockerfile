@@ -17,6 +17,7 @@ COPY --from=build app/target/x86_64-unknown-linux-musl/release/smoke_test /
 COPY --from=build app/target/x86_64-unknown-linux-musl/release/prime_time /
 COPY --from=build app/target/x86_64-unknown-linux-musl/release/means_to_an_end /
 COPY --from=build app/target/x86_64-unknown-linux-musl/release/budget_chat /
+COPY --from=build app/target/x86_64-unknown-linux-musl/release/unusual_database_program /
 COPY --from=build app/script.sh /
 RUN chmod +x "/script.sh"
 ENTRYPOINT ["/script.sh"]

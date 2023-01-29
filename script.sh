@@ -12,6 +12,9 @@
 # Start the fourth process
 /budget_chat --port 9004 2>&1 | sed -e 's/^/[budget_chat] /' &
 
+# Start the fourth process
+/unusual_database_program --port 9005 2>&1 | sed -e 's/^/[unusual_database_program] /' &
+
 # Wait for any process to exit
 wait -n
   
