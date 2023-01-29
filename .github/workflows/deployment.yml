@@ -85,8 +85,7 @@ jobs:
           file: 'fly.toml'
           field: 'app'
 
-      - name: 🚀 Deploy Staging
-        if: ${{ github.ref == 'refs/heads/dev' }}
+      - name: 🚀 Deploy
         uses: superfly/flyctl-actions@1.3
         with:
           args:
