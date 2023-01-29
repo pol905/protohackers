@@ -33,8 +33,8 @@ processes = []
     port = 9002
 
 [[services]]
-  internal_port = 9003
+  internal_port = 9004
   protocol = "tcp"
 
   [[services.ports]]
-    port = 9003
+    port = 9004

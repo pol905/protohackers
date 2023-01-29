@@ -10,7 +10,7 @@
 /means_to_an_end --port 9002 2>&1 | sed -e 's/^/[means_to_an_end] /' &
 
 # Start the fourth process
-/budget_chat --port 9003 2>&1 | sed -e 's/^/[budget_chat] /' &
+/budget_chat --port 9004 2>&1 | sed -e 's/^/[budget_chat] /' &
 
 # Wait for any process to exit
 wait -n
