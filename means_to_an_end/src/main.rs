@@ -82,7 +82,6 @@ fn main() {
                         let second_value: [u8; 4] = buf[5..].try_into().unwrap();
                         let first_value = i32::from_be_bytes(first_value);
                         let second_value = i32::from_be_bytes(second_value);
-                        println!("Buffer: {:?}", buf);
                         match req_type {
                             b'I' => {
                                 let asset_price = AssetPrice::new(first_value, second_value);
