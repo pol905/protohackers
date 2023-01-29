@@ -1,3 +1,4 @@
+eMoBq3HEjyu11DgrCRvlY9wwh8LMCNJS2Ec3aH1L7cs
 #!/bin/sh
 
 # Start the first process
@@ -6,8 +7,12 @@
 # Start the second process
 /prime_time --port 9001 2>&1 | sed -e 's/^/[prime_time] /' &
 
-# Start the second process
+# Start the third process
 /means_to_an_end --port 9002 2>&1 | sed -e 's/^/[means_to_an_end] /' &
+
+# Start the fourth process
+/budget_chat --port 9003 2>&1 | sed -e 's/^/[budget_chat] /' &
+
 # Wait for any process to exit
 wait -n
   

@@ -3,7 +3,7 @@ use protohackers_tcp_helper::{
     cli_helper::Args,
     tcp, errors::ProtoHackersError
 };
-use std::thread;
+use std::{thread, io::{Read, Write}};
 struct AssetPrice {
     timestamp: i32,
     price: i32
@@ -65,14 +65,15 @@ fn main() {
     for connection in listener.incoming() {
         thread::spawn(move || {
             match connection {
-                Ok(tcp_stream) => {
+                Ok(mut tcp_stream) => {
                     let mut asset_prices = AssetPrices::new();
                     let mut buf = [0; 9];
-                    let mut tcp_reader = tcp::create_buf_reader(&tcp_stream);
-                    let mut tcp_writer = tcp::create_buf_writer(&tcp_stream);
+                    // let mut tcp_reader = tcp::create_buf_reader(&tcp_stream);
+                    // let mut tcp_writer = tcp::create_buf_writer(&tcp_stream);
                     loop {
-                        let bytes_read = tcp::read_stream_exact(&mut tcp_reader, &mut buf);
+                        let bytes_read = tcp_stream.read_exact(&mut buf);
                         if bytes_read.is_err() {
+                            println!("Failed to read bytes");
                             break;
                         }
 
@@ -81,6 +82,7 @@ fn main() {
                         let second_value: [u8; 4] = buf[5..].try_into().unwrap();
                         let first_value = i32::from_be_bytes(first_value);
                         let second_value = i32::from_be_bytes(second_value);
+                        println!("Buffer: {:?}", buf);
                         match req_type {
                             b'I' => {
                                 let asset_price = AssetPrice::new(first_value, second_value);
@@ -89,7 +91,7 @@ fn main() {
                             b'Q' => {
                                 let query = Query::new(first_value, second_value);
                                 let mean = asset_prices.find_mean(query);
-                                let _ = tcp::write_stream(&mut tcp_writer, mean.to_be_bytes().as_slice());
+                                let _ = tcp_stream.write(mean.to_be_bytes().as_slice());
                             },
                             _ => {}
                         }
