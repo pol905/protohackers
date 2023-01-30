@@ -41,7 +41,7 @@ processes = []
 
 [[services]]
   internal_port = 9005
-  protocol = "tcp"
+  protocol = "udp"
 
   [[services.ports]]
     port = 9005
