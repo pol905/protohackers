@@ -9,8 +9,10 @@ struct UnusualDatabase {
 
 impl UnusualDatabase {
     fn new() -> UnusualDatabase {
+        let mut key_store = HashMap::new();
+        key_store.insert(String::from("version"), String::from("x kv store"));
         UnusualDatabase {
-            key_store: HashMap::new()
+            key_store
         }
     }
     fn insert_key(&mut self, key: String, value: String) {
