@@ -23,7 +23,7 @@ impl UnusualDatabase {
 }
 
 fn server_init(port: u16) -> Result<UdpSocket, std::io::Error> {
-    Ok(UdpSocket::bind(format!("0.0.0.0:{port}"))?)
+    Ok(UdpSocket::bind(format!("fly-global-services:{port}"))?)
 }
 
 fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
@@ -62,12 +62,10 @@ fn main() {
                 Some(value) => {
                     key.push('=');
                     key.push_str(&format!("{value}"));
-                    // key.replace("\n", "")
                     key
                 }
                 None => {
                     key.push_str(&format!("="));
-                    // key.replace("\n", "")
                     key
                 }
             };
