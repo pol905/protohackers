@@ -34,12 +34,12 @@ fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
 
 fn receive_datagram(socket: &UdpSocket, buf: &mut [u8]) -> Result<(usize, String), std::io::Error> {
     let (num_bytes, src_addr) = socket.recv_from(buf)?;
-    println!("Source:{};Num Bytes:{};Buf::{:?}", src_addr, num_bytes, &buf[..(num_bytes)]);
+    // println!("Source:{};Num Bytes:{};Buf::{:?}", src_addr, num_bytes, &buf[..(num_bytes)]);
     Ok((num_bytes, src_addr.to_string()))
 }
 
 fn send_datagram(socket: &UdpSocket, data: &[u8], addr: String) -> Result<usize, std::io::Error> {
-    println!("Sending data: {:?}", data);
+    // println!("Sending data: {:?}", data);
     socket.send_to(data, addr)
 }
  
