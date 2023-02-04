@@ -76,8 +76,6 @@ fn main() {
         let value;
 
         key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
-            key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from("")); 
-        key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
         // println!("{:?}", &buf[(equals_index + 1)..(equals_index + (bytes_read - equals_index))]);
         value = String::from_utf8(buf[equals_index + 1..].to_vec()).unwrap_or_else(|_| String::from("")); 
 
