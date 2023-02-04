@@ -25,7 +25,7 @@ impl UnusualDatabase {
 }
 
 fn server_init(port: u16) -> Result<UdpSocket, std::io::Error> {
-    Ok(UdpSocket::bind(format!("0.0.0.0:{port}"))?)
+    Ok(UdpSocket::bind(format!("fly-global-services:{port}"))?)
 }
 
 fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
@@ -79,7 +79,7 @@ fn main() {
 
         key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
         value = String::from_utf8(buf[(equals_index + 1)..(equals_index + (bytes_read - equals_index))].to_vec()).unwrap_or_else(|_| String::from("")); 
-        
+
         if key != String::from("version") {
             unusual_database.insert_key(key, value);
         }
