@@ -60,6 +60,7 @@ fn main() {
         let equals_index = find_char_index(&buf, b'=').unwrap_or_else(|| buf_length);
         if equals_index == buf_length {
             let mut key = String::from_utf8(buf[..bytes_read].into()).unwrap();
+            println!("Only key: {}", key);
             let response = match unusual_database.retrieve_key(&key) {
                 Some(value) => {
                     key.push('=');
@@ -79,7 +80,7 @@ fn main() {
 
         key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
         value = String::from_utf8(buf[(equals_index + 1)..(equals_index + (bytes_read - equals_index))].to_vec()).unwrap_or_else(|_| String::from("")); 
-
+        println!("key:value = {}:{}", key, value);
         if key != String::from("version") {
             unusual_database.insert_key(key, value);
         }
