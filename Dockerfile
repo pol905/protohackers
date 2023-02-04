@@ -20,4 +20,4 @@ COPY --from=build app/target/x86_64-unknown-linux-musl/release/budget_chat /
 COPY --from=build app/target/x86_64-unknown-linux-musl/release/unusual_database_program /
 COPY --from=build app/script.sh /
 RUN chmod +x "/script.sh"
-ENTRYPOINT ["/script.sh"]
+ENTRYPOINT ["/unusual_database_program", "--port", "9005"]
