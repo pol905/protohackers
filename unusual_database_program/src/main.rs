@@ -60,7 +60,7 @@ fn main() {
         let equals_index = find_char_index(&buf, b'=').unwrap_or_else(|| buf_length);
         if equals_index == buf_length {
             let mut key = String::from_utf8(buf[..bytes_read].into()).unwrap();
-            println!("Only key: {}", key);
+            print!("key: {}", key);
             let response = match unusual_database.retrieve_key(&key) {
                 Some(value) => {
                     key.push('=');
@@ -72,6 +72,7 @@ fn main() {
                     key
                 }
             };
+            println!(" Response: {}", response);
             let _ = send_datagram(&udp_socket, response.as_bytes(), src_addr);
             continue;
         }
