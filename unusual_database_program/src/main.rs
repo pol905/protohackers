@@ -23,7 +23,7 @@ impl UnusualDatabase {
 }
 
 fn server_init(port: u16) -> Result<UdpSocket, std::io::Error> {
-    Ok(UdpSocket::bind(format!("fly-global-services:{port}"))?)
+    Ok(UdpSocket::bind(format!("0.0.0.0:{port}"))?)
 }
 
 fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
@@ -32,7 +32,7 @@ fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
 
 fn receive_datagram(socket: &UdpSocket, buf: &mut [u8]) -> Result<(usize, String), std::io::Error> {
     let (num_bytes, src_addr) = socket.recv_from(buf)?;
-    println!("Source:{};Num Bytes:{};Buf::{:?}", src_addr, num_bytes, &buf[..(num_bytes - 1)]);
+    println!("Source:{};Num Bytes:{};Buf::{:?}", src_addr, num_bytes, &buf[..(num_bytes)]);
     Ok((num_bytes, src_addr.to_string()))
 }
 
@@ -57,16 +57,16 @@ fn main() {
         let buf_length = buf.len();
         let equals_index = find_char_index(&buf, b'=').unwrap_or_else(|| buf_length);
         if equals_index == buf_length {
-            let mut key = String::from_utf8(buf[..bytes_read - 1].into()).unwrap();
+            let mut key = String::from_utf8(buf[..bytes_read].into()).unwrap();
             let response = match unusual_database.retrieve_key(&key) {
                 Some(value) => {
                     key.push('=');
-                    key.push_str(&format!("{value}\n"));
+                    key.push_str(&format!("{value}"));
                     // key.replace("\n", "")
                     key
                 }
                 None => {
-                    key.push_str(&format!("=\n"));
+                    key.push_str(&format!("="));
                     // key.replace("\n", "")
                     key
                 }
@@ -81,8 +81,8 @@ fn main() {
             key = String::from("");
             value = String::from("");
         } else {
-            key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from("")).replace("\n", ""); 
-            value = String::from_utf8(buf[equals_index + 1..(bytes_read - equals_index)].to_vec()).unwrap_or_else(|_| String::from("\n"));
+            key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from("")); 
+            value = String::from_utf8(buf[equals_index + 1..(bytes_read - equals_index + 1)].to_vec()).unwrap_or_else(|_| String::from(""));
         }
         unusual_database.insert_key(key, value);
     }

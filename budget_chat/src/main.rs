@@ -25,6 +25,7 @@ impl UserNameError {
             UserNameError::NameTooLong => "Name too long (Maximum 16 characters)",
             _ => "Invalid name. Please ensure name consists of only alphabets and digits",
         }
+        
     }
 }
 
