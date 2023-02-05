@@ -6,38 +6,39 @@ kill_timeout = 5
 processes = []
 
 [env]
+  FLY_UDP_BIND_ADDR = "fly-global-services"
 
 [experimental]
   allowed_public_ports = []
   auto_rollback = true
 
-# [[services]]
-#   internal_port = 9000
-#   protocol = "tcp"
+[[services]]
+  internal_port = 9000
+  protocol = "tcp"
 
-#   [[services.ports]]
-#     port = 9000
+  [[services.ports]]
+    port = 9000
 
-# [[services]]
-#   internal_port = 9001
-#   protocol = "tcp"
+[[services]]
+  internal_port = 9001
+  protocol = "tcp"
 
-#   [[services.ports]]
-#     port = 9001
+  [[services.ports]]
+    port = 9001
 
-# [[services]]
-#   internal_port = 9002
-#   protocol = "tcp"
+[[services]]
+  internal_port = 9002
+  protocol = "tcp"
 
-#   [[services.ports]]
-#     port = 9002
+  [[services.ports]]
+    port = 9002
 
-# [[services]]
-#   internal_port = 9004
-#   protocol = "tcp"
+[[services]]
+  internal_port = 9004
+  protocol = "tcp"
 
-#   [[services.ports]]
-#     port = 9004
+  [[services.ports]]
+    port = 9004
 
 [[services]]
   internal_port = 9005

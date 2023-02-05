@@ -1,4 +1,4 @@
-use std::{net::UdpSocket, collections::HashMap};
+use std::{env, net::UdpSocket, collections::HashMap};
 use protohackers_tcp_helper::cli_helper::Args;
 use clap::Parser;
 
@@ -25,7 +25,7 @@ impl UnusualDatabase {
 }
 
 fn server_init(port: u16) -> Result<UdpSocket, std::io::Error> {
-    Ok(UdpSocket::bind(format!("fly-global-services:{port}"))?)
+    Ok(UdpSocket::bind(format!("{}:{port}", env::var("FLY_UDP_BIND_ADDR").unwrap_or(String::from("0.0.0.0"))))?)
 }
 
 fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
@@ -39,7 +39,7 @@ fn receive_datagram(socket: &UdpSocket, buf: &mut [u8]) -> Result<(usize, String
 }
 
 fn send_datagram(socket: &UdpSocket, data: &[u8], addr: String) -> Result<usize, std::io::Error> {
-    // println!("Sending data: {:?}", data);
+    println!("Sending data: {:?}", data);
     socket.send_to(data, addr)
 }
  
@@ -57,7 +57,6 @@ fn main() {
         let equals_index = find_char_index(&buf, b'=').unwrap_or_else(|| buf_length);
         if !src_addr.is_empty() && equals_index == buf_length {
             let mut key = String::from_utf8(buf[..bytes_read].into()).unwrap();
-            print!("key: {}", key);
             let response = match unusual_database.retrieve_key(&key) {
                 Some(value) => {
                     key.push_str(&format!("={value}"));
@@ -68,7 +67,6 @@ fn main() {
                     key
                 }
             };
-            println!(" Response: {}", response);
             let _ = send_datagram(&udp_socket, response.as_bytes(), src_addr);
             continue;
         }
@@ -77,7 +75,6 @@ fn main() {
 
         key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
         value = String::from_utf8(buf[(equals_index + 1)..(equals_index + (bytes_read - equals_index))].to_vec()).unwrap_or_else(|_| String::from("")); 
-        println!("key:value = {}:{}", key, value);
         if key != String::from("version") {
             unusual_database.insert_key(key, value);
         }
