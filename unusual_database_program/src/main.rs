@@ -25,7 +25,7 @@ impl UnusualDatabase {
 }
 
 fn server_init(port: u16) -> Result<UdpSocket, std::io::Error> {
-    Ok(UdpSocket::bind(format!("{}:{port}", env::var("FLY_UDP_BIND_ADDR").unwrap_or(String::from("0.0.0.0"))))?)
+    Ok(UdpSocket::bind(format!("{}:{port}", env::var("FLY_UDP_BIND_ADDR").unwrap_or_else(|_| String::from("0.0.0.0"))))?)
 }
 
 fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
