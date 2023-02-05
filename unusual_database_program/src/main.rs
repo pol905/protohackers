@@ -1,4 +1,4 @@
-use std::{env, net::UdpSocket, collections::HashMap};
+use std::{env, net::UdpSocket, collections::HashMap, ops::Deref};
 use protohackers_tcp_helper::cli_helper::Args;
 use clap::Parser;
 
@@ -25,7 +25,7 @@ impl UnusualDatabase {
 }
 
 fn server_init(port: u16) -> Result<UdpSocket, std::io::Error> {
-    Ok(UdpSocket::bind(format!("{}:{port}", env::var("FLY_UDP_BIND_ADDR").unwrap_or_else(|_| String::from("0.0.0.0"))))?)
+    UdpSocket::bind(format!("{}:{port}", env::var("FLY_UDP_BIND_ADDR").unwrap_or_else(|_| String::from("0.0.0.0"))))
 }
 
 fn find_char_index(buf: &[u8], byte: u8) -> Option<usize> {
@@ -54,7 +54,7 @@ fn main() {
             Err(_) => (0, String::from("")),
         };
         let buf_length = buf.len();
-        let equals_index = find_char_index(&buf, b'=').unwrap_or_else(|| buf_length);
+        let equals_index = find_char_index(&buf, b'=').unwrap_or(buf_length);
         if !src_addr.is_empty() && equals_index == buf_length {
             let mut key = String::from_utf8(buf[..bytes_read].into()).unwrap();
             let response = match unusual_database.retrieve_key(&key) {
@@ -63,19 +63,17 @@ fn main() {
                     key
                 }
                 None => {
-                    key.push_str(&format!("="));
+                    key.push_str("=");
                     key
                 }
             };
             let _ = send_datagram(&udp_socket, response.as_bytes(), src_addr);
             continue;
         }
-        let key;
-        let value;
-
-        key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
-        value = String::from_utf8(buf[(equals_index + 1)..(equals_index + (bytes_read - equals_index))].to_vec()).unwrap_or_else(|_| String::from("")); 
-        if key != String::from("version") {
+        
+        let key = String::from_utf8(buf[..equals_index].to_vec()).unwrap_or_else(|_| String::from(""));
+        let value = String::from_utf8(buf[(equals_index + 1)..(equals_index + (bytes_read - equals_index))].to_vec()).unwrap_or_else(|_| String::from("")); 
+        if key != *"version" {
             unusual_database.insert_key(key, value);
         }
     }

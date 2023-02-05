@@ -6,7 +6,7 @@ use protohackers_tcp_helper::{
 };
 use std::{
     thread,
-    io::{Read, Write, BufRead, BufWriter, Error},
+    io::{Write, BufRead, BufWriter, Error},
     collections::HashMap,
     net::TcpStream,
     sync::{Arc, Mutex}
