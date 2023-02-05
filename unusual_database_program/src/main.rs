@@ -53,18 +53,14 @@ fn main() {
             Ok(data) => data,
             Err(_) => (0, String::from("")),
         };
-        if bytes_read == 0 {
-            continue;
-        }
         let buf_length = buf.len();
         let equals_index = find_char_index(&buf, b'=').unwrap_or_else(|| buf_length);
-        if equals_index == buf_length {
+        if !src_addr.is_empty() && equals_index == buf_length {
             let mut key = String::from_utf8(buf[..bytes_read].into()).unwrap();
             print!("key: {}", key);
             let response = match unusual_database.retrieve_key(&key) {
                 Some(value) => {
-                    key.push('=');
-                    key.push_str(&format!("{value}"));
+                    key.push_str(&format!("={value}"));
                     key
                 }
                 None => {
